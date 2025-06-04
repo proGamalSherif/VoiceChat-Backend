@@ -4,3 +4,5 @@
 
 /.vs
 /WebAPI/bin/Debug/net9.0
+/WebAPI/appsettings.Development.json
+/WebAPI/appsettings.json
