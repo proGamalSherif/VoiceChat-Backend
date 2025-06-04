@@ -23,13 +23,13 @@ jobs:
           dotnet-version: "9.0.x"
 
       - name: Restore Dependencies
-        run: dotnet restore ./TechSpireAPI.sln
+        run: dotnet restore ./VoiceChatTask.sln
 
       - name: Build
-        run: dotnet build ./TechSpireAPI.sln --configuration Release --no-restore
+        run: dotnet build ./VoiceChatTask.sln --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish ./TechSpireAPI.sln --configuration Release --no-build --output ${{ env.PUBLISH_FOLDER }}
+        run: dotnet publish ./VoiceChatTask.sln --configuration Release --no-build --output ${{ env.PUBLISH_FOLDER }}
 
       - name: Deploy using MSDeploy (Publish Profile)
         uses: azure/webapps-deploy@v2
