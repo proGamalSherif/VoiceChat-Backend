@@ -1,38 +1,35 @@
-name: Deploy to MonsterASP.NET
+name: FTP Deploy to MonsterASP
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - master
 
-env:
-  PUBLISH_FOLDER: "./publish"
-
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "9.0.x"
 
-      - name: Restore Dependencies
-        run: dotnet restore ./VoiceChatTask.sln
+      - name: Restore
+        run: dotnet restore VoiceChatTask.sln
 
       - name: Build
-        run: dotnet build ./VoiceChatTask.sln --configuration Release --no-restore
+        run: dotnet build VoiceChatTask.sln --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish ./VoiceChatTask.sln --configuration Release --no-build --output ${{ env.PUBLISH_FOLDER }}
+        run: dotnet publish VoiceChatTask.sln --configuration Release --no-build --output publish
 
-      - name: Deploy using MSDeploy (Publish Profile)
-        uses: azure/webapps-deploy@v2
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4
         with:
-          publish-profile: ${{ secrets.MONSTER_PUBLISH_PROFILE }}
-          package: ${{ env.PUBLISH_FOLDER }}
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./publish
