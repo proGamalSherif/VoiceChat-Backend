@@ -48,9 +48,14 @@ namespace WebAPI
                 options.AddPolicy("AllowAll",
                     policy =>
                     {
-                        policy.AllowAnyOrigin()
-                              .AllowAnyMethod()
-                              .AllowAnyHeader();
+                        policy.WithOrigins("http://localhost:4200")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
+                        policy.WithOrigins("https://voice-chat-frontend-chi.vercel.app")
+                        .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials();
                     });
             });
 
@@ -66,6 +71,7 @@ namespace WebAPI
             app.UseCors("AllowAll");
             app.MapControllers();
             app.MapHub<ChatHub>("/chathub");
+            app.MapHub<CallHub>("/callhub");
             app.Run();
         }
     }

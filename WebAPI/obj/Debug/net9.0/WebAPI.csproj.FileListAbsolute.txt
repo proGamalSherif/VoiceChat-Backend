@@ -176,3 +176,4 @@ D:\Programming Sections\VoiceChatTask\WebAPI\obj\Debug\net9.0\refint\WebAPI.dll
 D:\Programming Sections\VoiceChatTask\WebAPI\obj\Debug\net9.0\WebAPI.pdb
 D:\Programming Sections\VoiceChatTask\WebAPI\obj\Debug\net9.0\WebAPI.genruntimeconfig.cache
 D:\Programming Sections\VoiceChatTask\WebAPI\obj\Debug\net9.0\ref\WebAPI.dll
+D:\Programming Sections\VoiceChatTask\WebAPI\obj\Debug\net9.0\WebAPI.sourcelink.json

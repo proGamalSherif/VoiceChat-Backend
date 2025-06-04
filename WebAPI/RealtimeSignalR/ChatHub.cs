@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using WebAPI.DTOs.RoomChat;
 
 namespace WebAPI.RealtimeSignalR
 {
@@ -6,11 +7,19 @@ namespace WebAPI.RealtimeSignalR
     {
         public async Task JoinRoom(int roomId)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
+            try
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in JoinRoom: {ex.Message}");
+                throw; 
+            }
         }
-        public async Task SendMessage(Guid userId, int roomId, string message)
+        public async Task SendMessage(ReadRoomChatDTO entityDTO)
         {
-            await Clients.Group(roomId.ToString()).SendAsync("ReceiveMessage", userId, roomId, message);
+            await Clients.Group(entityDTO.RoomId.ToString()).SendAsync("ReceiveMessage", entityDTO);
         }
     }
 }
