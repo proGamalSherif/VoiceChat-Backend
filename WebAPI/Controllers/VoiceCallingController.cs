@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
             return Ok(result);
         }
         [HttpPost]
-        public async Task<IActionResult> InsertEntity(InsertVoiceCallingDTO entityDTO)
+        public async Task<IActionResult> InsertEntity([FromForm]InsertVoiceCallingDTO entityDTO)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);

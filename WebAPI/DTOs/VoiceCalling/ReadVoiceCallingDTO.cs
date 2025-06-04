@@ -1,4 +1,6 @@
-﻿namespace WebAPI.DTOs.VoiceCalling
+﻿using WebAPI.Entities.Enums;
+
+namespace WebAPI.DTOs.VoiceCalling
 {
     public class ReadVoiceCallingDTO
     {
@@ -9,5 +11,6 @@
         public string CallerName { get; set; }
         public int RoomId { get; set; }
         public string RoomName { get; set; }
+        public CallingStatus CallingStatus { get; set; }
     }
 }

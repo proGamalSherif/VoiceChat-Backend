@@ -565,19 +565,41 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/InsertVoiceCallingDTO"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InsertVoiceCallingDTO"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/InsertVoiceCallingDTO"
+                "type": "object",
+                "properties": {
+                  "ReceiverId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "CallerId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "RoomId": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "CallingStatus": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              },
+              "encoding": {
+                "ReceiverId": {
+                  "style": "form"
+                },
+                "CallerId": {
+                  "style": "form"
+                },
+                "RoomId": {
+                  "style": "form"
+                },
+                "CallingStatus": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -665,24 +687,6 @@
   },
   "components": {
     "schemas": {
-      "InsertVoiceCallingDTO": {
-        "type": "object",
-        "properties": {
-          "receiverId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "callerId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "roomId": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "additionalProperties": false
-      },
       "UpdateApplicationUserDTO": {
         "type": "object",
         "properties": {

@@ -366,9 +366,24 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "entityDTO",
-        "Type": "WebAPI.DTOs.VoiceCalling.InsertVoiceCallingDTO",
-        "IsRequired": true
+        "Name": "ReceiverId",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "CallerId",
+        "Type": "System.Guid",
+        "IsRequired": false
+      },
+      {
+        "Name": "RoomId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "CallingStatus",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

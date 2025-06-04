@@ -2,9 +2,12 @@
 {
     public enum CallingStatus
     {
-        Connected=0,
-        Missed = 1,
-        Failed = 2,
-        NA=3
+        CameraOn=0,
+        CameraOff=1,
+        MicOn=2,
+        MicOff=3,
+        EndCall=4,
+        StartCall=5,
+        NA=6
     }
 }
