@@ -1,0 +1,38 @@
+name: Deploy to MonsterASP.NET
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+env:
+  PUBLISH_FOLDER: "./publish"
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Restore Dependencies
+        run: dotnet restore ./TechSpireAPI.sln
+
+      - name: Build
+        run: dotnet build ./TechSpireAPI.sln --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish ./TechSpireAPI.sln --configuration Release --no-build --output ${{ env.PUBLISH_FOLDER }}
+
+      - name: Deploy using MSDeploy (Publish Profile)
+        uses: azure/webapps-deploy@v2
+        with:
+          publish-profile: ${{ secrets.MONSTER_PUBLISH_PROFILE }}
+          package: ${{ env.PUBLISH_FOLDER }}
