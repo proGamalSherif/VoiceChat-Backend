@@ -1,9 +1,17 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using WebAPI.DTOs.VoiceCalling;
+using WebAPI.Entities.Enums;
+using WebAPI.Interfaces.Services;
 
 namespace WebAPI.RealtimeSignalR
 {
     public class CallHub : Hub
     {
+        private readonly IVoiceCallingService voiceCallingService;
+        public CallHub(IVoiceCallingService _voiceCallingService)
+        {
+            voiceCallingService = _voiceCallingService;             
+        }
         public static Dictionary<Guid, string> userConnectionMap = new();
         public override Task OnConnectedAsync()
         {
@@ -23,11 +31,20 @@ namespace WebAPI.RealtimeSignalR
             }
             return base.OnDisconnectedAsync(exception);
         }
-        public async Task StartCall(Guid receiverId, Guid callerId)
+        public async Task StartCall(Guid receiverId, Guid callerId,int rootId)
         {
             if (userConnectionMap.TryGetValue(receiverId, out string receiverConnectionId))
             {
-                await Clients.Client(receiverConnectionId).SendAsync("ReceiveCall", callerId);
+                InsertVoiceCallingDTO entityDTO = new InsertVoiceCallingDTO()
+                {
+                    ReceiverId = receiverId,
+                    CallerId = callerId,
+                    CallingStatus = 5,
+                    RoomId = rootId
+                };
+                var result = await voiceCallingService.InsertEntity(entityDTO);
+                if(result.IsSuccess)
+                    await Clients.Client(receiverConnectionId).SendAsync("ReceiveCall", callerId);
             }
         }
         public async Task SendOffer(Guid receiverId, Guid senderId, object offer)

@@ -26,6 +26,9 @@ namespace WebAPI.Repositories
         public async Task<APIResponse<ICollection<VoiceCalling>>> GetAllAsync()
         {
             var voiceCallings = await db.VoiceCallings
+                .Include(u=>u.Receiver)
+                .Include(u=>u.Caller)
+                .Include(r=>r.Room)
                 .Where(vc => !vc.IsDeleted).ToListAsync();
             if (voiceCallings.Count == 0)
                 return APIResponse<ICollection<VoiceCalling>>.Failure("No Voice Calling Found");
