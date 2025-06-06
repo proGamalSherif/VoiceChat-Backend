@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using WebAPI.DTOs.Room;
 using WebAPI.DTOs.UserConnection;
+using WebAPI.DTOs.UserStatus;
 using WebAPI.Entities;
 using WebAPI.Interfaces.Repositories;
 using WebAPI.Interfaces.Services;
@@ -12,12 +13,14 @@ namespace WebAPI.Services
     {
         private readonly IRoomRepository roomRepository;
         private readonly IUserConnectionService userConnectionService;
+        private readonly IUserStatusService statusService;
         private readonly IMapper mapper;
-        public RoomService(IRoomRepository _roomRepository,IMapper _mapper, IUserConnectionService _userConnectionService)
+        public RoomService(IRoomRepository _roomRepository,IMapper _mapper, IUserConnectionService _userConnectionService, IUserStatusService statusService)
         {
             roomRepository = _roomRepository;
             mapper = _mapper;
             userConnectionService = _userConnectionService;
+            this.statusService = statusService;
         }
         public async Task<APIResponse<string>> DeleteEntity(int id)
         {
@@ -61,6 +64,15 @@ namespace WebAPI.Services
             var userResult = await userConnectionService.InsertEntity(userConnection);
             if (!userResult.IsSuccess || userResult.Data == null)
                 return APIResponse<ReadRoomDTO>.Failure(userResult.Message);
+            InsertUserStatusDTO entityDTO = new InsertUserStatusDTO
+            {
+                UserId = userConnection.UserId,
+                RoomId = userConnection.RoomId,
+                IsLogged=true
+            };
+           var statusResponse =  await statusService.SetUserStatus(entityDTO);
+            if(!statusResponse.IsSuccess)
+                return APIResponse<ReadRoomDTO>.Failure(statusResponse.Message);
             var mappedResult = mapper.Map<ReadRoomDTO>(result.Data);
             return APIResponse<ReadRoomDTO>.Success(result.Message, mappedResult);
         }

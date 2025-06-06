@@ -14,7 +14,7 @@ namespace WebAPI.DBContext
         public DbSet<RoomChat> RoomChats { get; set; }
         public DbSet<UserConnection> UserConnections { get; set; }
         public DbSet<VoiceCalling> VoiceCallings { get; set; }
-
+        public DbSet<UserStatus> UserStatuses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

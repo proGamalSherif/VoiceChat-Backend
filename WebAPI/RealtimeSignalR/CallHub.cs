@@ -2,24 +2,61 @@
 
 namespace WebAPI.RealtimeSignalR
 {
-    public class CallHub:Hub
+    public class CallHub : Hub
     {
-        public async Task JoinRoom(int roomId)
+        public static Dictionary<Guid, string> userConnectionMap = new();
+        public override Task OnConnectedAsync()
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, roomId.ToString());
-            await Clients.Group(roomId.ToString()).SendAsync("UserJoined", Context.ConnectionId);
+            var userIdStr = Context.GetHttpContext().Request.Query["userId"];
+            if (Guid.TryParse(userIdStr, out Guid userId))
+            {
+                userConnectionMap[userId] = Context.ConnectionId;
+            }
+            return base.OnConnectedAsync();
         }
-        public async Task SendOffer(string receiverConnectionId, object offer)
+        public override Task OnDisconnectedAsync(Exception exception)
         {
-            await Clients.Client(receiverConnectionId).SendAsync("ReceiveOffer", Context.ConnectionId, offer);
+            var userId = userConnectionMap.FirstOrDefault(kvp => kvp.Value == Context.ConnectionId).Key;
+            if (userId != Guid.Empty)
+            {
+                userConnectionMap.Remove(userId);
+            }
+            return base.OnDisconnectedAsync(exception);
         }
-        public async Task SendAnswer(string receiverConnectionId, object answer)
+        public async Task StartCall(Guid receiverId, Guid callerId)
         {
-            await Clients.Client(receiverConnectionId).SendAsync("ReceiveAnswer", Context.ConnectionId, answer);
+            if (userConnectionMap.TryGetValue(receiverId, out string receiverConnectionId))
+            {
+                await Clients.Client(receiverConnectionId).SendAsync("ReceiveCall", callerId);
+            }
         }
-        public async Task SendIceCandidate(string receiverConnectionId, object candidate)
+        public async Task SendOffer(Guid receiverId, Guid senderId, object offer)
         {
-            await Clients.Client(receiverConnectionId).SendAsync("ReceiveIceCandidate", Context.ConnectionId, candidate);
+            if (userConnectionMap.TryGetValue(receiverId, out string receiverConnectionId))
+            {
+                await Clients.Client(receiverConnectionId).SendAsync("ReceiveOffer", senderId, offer);
+            }
+        }
+        public async Task SendAnswer(Guid receiverId, Guid senderId, object answer)
+        {
+            if (userConnectionMap.TryGetValue(receiverId, out string receiverConnectionId))
+            {
+                await Clients.Client(receiverConnectionId).SendAsync("ReceiveAnswer", senderId, answer);
+            }
+        }
+        public async Task SendIceCandidate(Guid receiverId, Guid senderId, object candidate)
+        {
+            if (userConnectionMap.TryGetValue(receiverId, out string receiverConnectionId))
+            {
+                await Clients.Client(receiverConnectionId).SendAsync("ReceiveIceCandidate", senderId, candidate);
+            }
+        }
+        public async Task EndCall(Guid receiverId, Guid senderId)
+        {
+            if (userConnectionMap.TryGetValue(receiverId, out string receiverConnectionId))
+            {
+                await Clients.Client(receiverConnectionId).SendAsync("ReceiveCallEnded", senderId);
+            }
         }
     }
 }

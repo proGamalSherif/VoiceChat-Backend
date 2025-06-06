@@ -12,8 +12,8 @@ using WebAPI.DBContext;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(VoiceDBContext))]
-    [Migration("20250603102635_InitialDb")]
-    partial class InitialDb
+    [Migration("20250604212001_UserStatus")]
+    partial class UserStatus
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -131,6 +131,32 @@ namespace WebAPI.Migrations
                     b.ToTable("UserConnections");
                 });
 
+            modelBuilder.Entity("WebAPI.Entities.UserStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsLogged")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserStatuses");
+                });
+
             modelBuilder.Entity("WebAPI.Entities.VoiceCalling", b =>
                 {
                     b.Property<int>("VoiceCallingId")
@@ -206,6 +232,25 @@ namespace WebAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("WebAPI.Entities.UserStatus", b =>
+                {
+                    b.HasOne("WebAPI.Entities.Room", "Room")
+                        .WithMany("UserStatuses")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebAPI.Entities.ApplicationUser", "User")
+                        .WithMany("UserStatuses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("WebAPI.Entities.VoiceCalling", b =>
                 {
                     b.HasOne("WebAPI.Entities.ApplicationUser", "Caller")
@@ -242,6 +287,8 @@ namespace WebAPI.Migrations
                     b.Navigation("RoomChats");
 
                     b.Navigation("UserConnections");
+
+                    b.Navigation("UserStatuses");
                 });
 
             modelBuilder.Entity("WebAPI.Entities.Room", b =>
@@ -249,6 +296,8 @@ namespace WebAPI.Migrations
                     b.Navigation("RoomChats");
 
                     b.Navigation("UserConnections");
+
+                    b.Navigation("UserStatuses");
 
                     b.Navigation("VoiceCallings");
                 });

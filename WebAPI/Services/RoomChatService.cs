@@ -50,7 +50,7 @@ namespace WebAPI.Services
                 return APIResponse<ReadRoomChatDTO>.Failure(result.Message);
             var mappedResult = mapper.Map<ReadRoomChatDTO>(result.Data);
             await hubContext.Clients.Group(entitiy.RoomId.ToString())
-                .SendAsync("ReceiveMessage",mappedResult);
+                .SendAsync("ReceiveMessage", mappedResult);
             return APIResponse<ReadRoomChatDTO>.Success(result.Message, mappedResult);
         }
         public async Task<APIResponse<ReadRoomChatDTO>> UpdateEntity(UpdateRoomChatDTO entitiy)

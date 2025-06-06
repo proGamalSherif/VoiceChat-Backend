@@ -28,6 +28,7 @@ namespace WebAPI
             builder.Services.AddScoped<IRoomRepository, RoomRepository>();
             builder.Services.AddScoped<IUserConnectionRepository, UserConnectionRepository>();
             builder.Services.AddScoped<IVoiceCallingRepository, VoiceCallingRepository>();
+            builder.Services.AddScoped<IUserStatusRepository, UserStatusRepository>();
 
             //Add Services
             builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
@@ -35,6 +36,7 @@ namespace WebAPI
             builder.Services.AddScoped<IRoomService, RoomService>();
             builder.Services.AddScoped<IUserConnectionService, UserConnectionService>();
             builder.Services.AddScoped<IVoiceCallingService, VoiceCallingService>();
+            builder.Services.AddScoped<IUserStatusService, UserStatusService>();
 
             //Add Swagger
             builder.Services.AddSwaggerGen();
@@ -52,7 +54,7 @@ namespace WebAPI
                             .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials();
-                        policy.WithOrigins("https://voice-chat-frontend-chi.vercel.app")
+                        policy.WithOrigins("https://voice-chat-ui.vercel.app")
                         .AllowAnyMethod()
                             .AllowAnyHeader()
                             .AllowCredentials();
@@ -61,11 +63,13 @@ namespace WebAPI
 
             builder.Services.AddControllers();
             var app = builder.Build();
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
+            //}
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseHttpsRedirection();
             app.UseAuthorization();
             app.UseCors("AllowAll");

@@ -13,5 +13,6 @@ namespace WebAPI.Entities
         public virtual ICollection<UserConnection> UserConnections { get; set; }
         public virtual ICollection<VoiceCalling> CallsMade { get; set; }
         public virtual ICollection<VoiceCalling> CallsReceived { get; set; }
+        public virtual ICollection<UserStatus> UserStatuses { get; set; }
     }
 }

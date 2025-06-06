@@ -14,5 +14,6 @@ namespace WebAPI.Entities
         public virtual ICollection<RoomChat> RoomChats { get; set; }
         public virtual ICollection<UserConnection> UserConnections { get; set; }
         public virtual ICollection<VoiceCalling> VoiceCallings { get; set; }
+        public virtual ICollection<UserStatus> UserStatuses { get; set; }
     }
 }
